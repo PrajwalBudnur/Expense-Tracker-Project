@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker with Analytics</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2>Expense Tracker</h2>
+            <button id="theme-toggle">🌙 Dark Mode</button>
+        </header>
+
+        <div class="budget-settings">
+            <label for="budget-input">Set Monthly Budget: </label>
+            <input type="number" id="budget-input" placeholder="e.g., 2000" />
+            <button id="set-budget-btn" class="btn-small">Save Budget</button>
+        </div>
+        
+        <div id="budget-alert" class="hidden">
+            Warning: You have exceeded your monthly budget limit!
+        </div>
+
+        <div class="summary">
+            <div>
+                <h4>Your Balance</h4>
+                <h1 id="balance">$0.00</h1>
+            </div>
+            <div class="inc-exp-container">
+                <div>
+                    <h4>Income</h4>
+                    <p id="money-plus" class="money plus">+$0.00</p>
+                </div>
+                <div>
+                    <h4>Expense</h4>
+                    <p id="money-minus" class="money minus">-$0.00</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <h3>Add New Transaction</h3>
+                <form id="form">
+                    <div class="form-control">
+                        <label for="text">Description</label>
+                        <input type="text" id="text" placeholder="Enter description..." required />
+                    </div>
+                    <div class="form-control">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" placeholder="Enter amount..." required />
+                    </div>
+                    <div class="form-control">
+                        <label for="type">Type</label>
+                        <select id="type">
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="food">Food</option>
+                            <option value="rent">Rent</option>
+                            <option value="travel">Travel</option>
+                            <option value="salary">Salary</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <button class="btn">Add transaction</button>
+                </form>
+
+                <h3>History</h3>
+                <ul id="list" class="list">
+                    </ul>
+            </div>
+
+            <div class="right-panel">
+                <h3>Expense Analytics</h3>
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+                <button id="export-btn" class="btn export-btn">Export to CSV</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
