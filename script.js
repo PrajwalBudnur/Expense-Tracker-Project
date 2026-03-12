@@ -1,4 +1,3 @@
-// DOM Elements
 const balance = document.getElementById('balance');
 const money_plus = document.getElementById('money-plus');
 const money_minus = document.getElementById('money-minus');
@@ -12,35 +11,26 @@ const themeToggle = document.getElementById('theme-toggle');
 const exportBtn = document.getElementById('export-btn');
 const budgetAlert = document.getElementById('budget-alert');
 
-// Tracks the ID of the transaction currently being edited
 let editID = null;
 
-// Budget Limit Configuration
-// New DOM Elements for Budget
 const budgetInput = document.getElementById('budget-input');
 const setBudgetBtn = document.getElementById('set-budget-btn');
 
-// Load dynamic budget from Local Storage (Default to 2000 if not set)
 let budgetLimit = localStorage.getItem('budgetLimit') !== null 
     ? +localStorage.getItem('budgetLimit') 
     : 2000;
 
-// Set the input field to show the current saved budget on load
 budgetInput.value = budgetLimit;
 
-// Local Storage check
 const localStorageTransactions = JSON.parse(localStorage.getItem('transactions'));
 let transactions = localStorage.getItem('transactions') !== null ? localStorageTransactions : [];
 
-// Chart Instance
 let expenseChart;
 
-// Generate random ID
 function generateID() {
     return Math.floor(Math.random() * 100000000);
 }
 
-// Add transaction
 function addTransaction(e) {
     e.preventDefault();
 
@@ -68,14 +58,12 @@ function addTransaction(e) {
     amount.value = '';
 }
 
-// Updated: Add transaction to DOM list
 function addTransactionDOM(transaction) {
     const sign = transaction.type === 'income' ? '+' : '-';
     const item = document.createElement('li');
 
     item.classList.add(transaction.type === 'income' ? 'plus' : 'minus');
     
-    // Notice the new action-buttons div and edit-btn
     item.innerHTML = `
         <div>
             ${transaction.text} <small>(${transaction.category})</small> 
@@ -89,7 +77,6 @@ function addTransactionDOM(transaction) {
     list.appendChild(item);
 }
 
-// Update the balance, income and expense
 function updateValues() {
     const amounts = transactions.map(transaction => 
         transaction.type === 'income' ? transaction.amount : -Math.abs(transaction.amount)
@@ -110,7 +97,6 @@ function updateValues() {
     money_plus.innerText = `+$${income}`;
     money_minus.innerText = `-$${expense}`;
 
-    // Budget Alert Check (Updated to use dynamic variable)
     if (expense > budgetLimit) {
         budgetAlert.classList.remove('hidden');
     } else {
@@ -118,23 +104,19 @@ function updateValues() {
     }
 }
 
-// Remove transaction by ID
 function removeTransaction(id) {
     transactions = transactions.filter(transaction => transaction.id !== id);
     updateLocalStorage();
     init();
 }
 
-// Update local storage
 function updateLocalStorage() {
     localStorage.setItem('transactions', JSON.stringify(transactions));
 }
 
-// Render Chart.js
 function renderChart() {
     const ctx = document.getElementById('expenseChart').getContext('2d');
     
-    // Process data for chart
     const expenses = transactions.filter(t => t.type === 'expense');
     const categories = [...new Set(expenses.map(t => t.category))];
     
@@ -144,7 +126,6 @@ function renderChart() {
             .reduce((acc, t) => acc + t.amount, 0);
     });
 
-    // Destroy existing chart to prevent canvas overlapping
     if (expenseChart) {
         expenseChart.destroy();
     }
@@ -168,7 +149,6 @@ function renderChart() {
     });
 }
 
-// Export to CSV
 function exportToCSV() {
     if (transactions.length === 0) {
         alert('No data to export!');
@@ -192,7 +172,6 @@ function exportToCSV() {
     document.body.removeChild(link);
 }
 
-// Dark Mode Toggle
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     const isDarkMode = document.body.classList.contains('dark-mode');
@@ -200,7 +179,6 @@ themeToggle.addEventListener('click', () => {
     themeToggle.innerText = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
 });
 
-// Initialize app
 function init() {
     list.innerHTML = '';
     transactions.forEach(addTransactionDOM);
@@ -214,34 +192,28 @@ function init() {
     }
 }
 
-// New: Prepare form for editing
 function editTransaction(id) {
-    // 1. Find the transaction by ID
+
     const transaction = transactions.find(t => t.id === id);
     if (!transaction) return;
 
-    // 2. Populate the form inputs
     text.value = transaction.text;
     amount.value = Math.abs(transaction.amount);
     type.value = transaction.type;
     category.value = transaction.category;
 
-    // 3. Set the global editID to the current transaction's ID
     editID = id;
 
-    // 4. Update the submit button UI to reflect "Edit Mode"
     const submitBtn = form.querySelector('.btn');
     submitBtn.innerText = 'Update transaction';
-    submitBtn.style.backgroundColor = '#feca57'; // Make it yellow to indicate edit mode
+    submitBtn.style.backgroundColor = '#feca57'; 
 }
 
-// Event Listeners
 form.addEventListener('submit', addTransaction);
 exportBtn.addEventListener('click', exportToCSV);
 
 init();
 
-// Save custom budget limit
 setBudgetBtn.addEventListener('click', () => {
     const newBudget = +budgetInput.value;
     
@@ -250,14 +222,11 @@ setBudgetBtn.addEventListener('click', () => {
         return;
     }
 
-    // Update variable and local storage
     budgetLimit = newBudget;
     localStorage.setItem('budgetLimit', budgetLimit);
     
-    // Recalculate values to trigger or hide the alert instantly
     updateValues(); 
     
-    // Optional visual feedback
     setBudgetBtn.innerText = "Saved!";
     setTimeout(() => setBudgetBtn.innerText = "Save Budget", 2000);
 });
